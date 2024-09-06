@@ -72,39 +72,56 @@ Questions:
 
 Task 2 Linux Server Simulation:
 1. Install Apache, MySQL and PHP on the Linux Ubuntu machine using apt-get or another package manager of your choice.
-   apt-get install apache2 mysql-server php libapache2-mod-php php-mysql
-2. Configure Apache to serve the website from the /var/www/html/ directory.
-   nano /etc/apache2/sites-available/000-default.conf
+
+    apt-get install apache2 mysql-server php libapache2-mod-php php-mysql
+
+3. Configure Apache to serve the website from the /var/www/html/ directory.
+
+    nano /etc/apache2/sites-available/000-default.conf
    systemctl restart apache2
-3. Create a simple website that displays the message "Hello World!"; when accessed through a web browser.
-   echo "Hello World!" | sudo tee /var/www/html/index.html
-4. Configure MySQL to create a new database, user, and password for the website.
-   mysql -u root -p 
+
+5. Create a simple website that displays the message "Hello World!"; when accessed through a web browser.
+
+    echo "Hello World!" | sudo tee /var/www/html/index.html
+
+7. Configure MySQL to create a new database, user, and password for the website.
+
+    mysql -u root -p 
    inside sql : 
    CREATE DATABASE website_db;
    CREATE USER 'website_user'@'localhost' IDENTIFIED BY 'omar';
    GRANT ALL PRIVILEGES ON website_db.* TO 'website_user'@'localhost';
    FLUSH PRIVILEGES;
    EXIT;
-5. Modify the website to use the newly created database to display a message that includes the visitor's IP address and the current time.
+   
+9. Modify the website to use the newly created database to display a message that includes the visitor's IP address and the current time.
+
    <?php
    echo "Visitor IP: " . $_SERVER['REMOTE_ADDR'];
    echo "Current Time: " . date('Y-m-d H:i:s');
    ?>
    Place the code inside /var/www/html/index.php:
    echo '<?php echo "Visitor IP: " . $_SERVER["REMOTE_ADDR"]; echo "Current Time: " . date("Y-m-d H:i:s"); ?>' | sudo tee /var/www/html/index.php
-6. Test the website by accessing it through a web browser and verifying that it displays the expected message.
+
+11. Test the website by accessing it through a web browser and verifying that it displays the expected message.
+
    http://localhost/info.php
   
 Task 3 Git and GitHub:
 1. Initialize a new Git repository on your local machine.
-   git init
-2. Create a (.gitignore) file to exclude any sensitive files (like configuration files with passwords).
-   echo "config.php" > .gitignore
-3. Commit your Markdown documentation file in the Git repository.
+
+    git init
+
+3. Create a (.gitignore) file to exclude any sensitive files (like configuration files with passwords).
+
+    echo "config.php" > .gitignore
+
+5. Commit your Markdown documentation file in the Git repository.
+
    git add README.md
    git commit -m "Add documentation"
-4. Create a new repository on GitHub and push your local repository to GitHub.
+
+7. Create a new repository on GitHub and push your local repository to GitHub.
    git remote add origin https://github.com/Omarabubakr2024/ATW-Task.git
    git push -u origin master
    
@@ -126,6 +143,7 @@ Command: The container runs php-fpm to serve the application.
  For the database service, I used the official MySQL image. This simplifies the process since I don't need to create a custom Dockerfile for MySQL.
  
  Next, I wrote the docker-compose.yml file to define and link both the Laravel application and the MySQL database.
+ 
 Application Service (app):
 
 version: '3.8'
@@ -202,7 +220,7 @@ Once you have your instance running, you need to copy the public key to the clou
 Connect to the Cloud Instance
 Use the SSH command to log into your remote server:
 
-ssh -i /path/to/id_rsa your_user@your_server_ip
+command: ssh -i /path/to/id_rsa your_user@your_server_ip
 
 -i specifies the path to your private key.
 your_user is the username of the remote instance (commonly ubuntu or root).
