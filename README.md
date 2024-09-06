@@ -1,111 +1,75 @@
-Task 1 Linux base 
-Task 1.1: Creating Directories and Files:-
-1. Create a directory named project.
-2. Inside the project directory, create two subdirectories named src and bin.
-3. In the src directory, create a file named main.c.
-4. Add the following line to main.c: // This is the main.c file 
+## Task 1: Linux Base
 
-Questions:
-1. What command did you use to create the project directory? 
+### Task 1.1: Creating Directories and Files
+1. Create a directory named `project`.
+2. Inside the `project` directory, create two subdirectories named `src` and `bin`.
+3. In the `src` directory, create a file named `main.c`.
+4. Add the following line to `main.c`: `// This is the main.c file`
 
-    mkdir project
-   
-3. How do you navigate into the src directory from the project directory?
+**Questions:**
+- What command did you use to create the project directory?  
+  **Answer**: `mkdir project`
 
-   cd src
-   
-5. Which command did you use to create the main.c file?
+- How do you navigate into the `src` directory from the `project` directory?  
+  **Answer**: `cd src`
 
-    touch src/main.c
+- Which command did you use to create the `main.c` file?  
+  **Answer**: `touch src/main.c`
 
-Task 1.2: File Permissions:-
+---
 
-1. Change the permissions of the main.c file to read and write for the owner, and read-only for the group and others.
-2. Verify the changes using the ls command.
+### Task 1.2: File Permissions
+1. Change the permissions of the `main.c` file to read and write for the owner, and read-only for the group and others.
+2. Verify the changes using the `ls` command.
 
-Questions:
-1. What command did you use to change the permissions of main.c?
+**Questions:**
+- What command did you use to change the permissions of `main.c`?  
+  **Answer**: `chmod 644 src/main.c`
 
-    chmod 644 src/main.c
-   
-3. What do the file permissions rw-r--r-- mean?
+- What do the file permissions `rw-r--r--` mean?  
+  **Answer**:  
+  - The owner can read and write the file.  
+  - The group can only read the file.  
+  - Others can read the file but cannot modify it.
 
-    The owner can read and write the file
-   Members of the group can only read the file, but they cannot modify it.
-   other users can read the file, but they cannot modify it.
+---
 
-Task 1.3: Basic Shell Scripting
-
-1. Create a shell script named hello.sh that prints "Hello, World!" to the terminal.
+### Task 1.3: Basic Shell Scripting
+1. Create a shell script named `hello.sh` that prints "Hello, World!" to the terminal.
 2. Make the script executable and run it.
 
-Questions:
-1. What command did you use to create the hello.sh file?
- 
-   echo 'echo "Hello, World!"' > hello.sh
-   
-3. How do you make a script executable?
+**Questions:**
+- What command did you use to create the `hello.sh` file?  
+  **Answer**: `echo 'echo "Hello, World!"' > hello.sh`
 
-   chmod +x hello.sh
-   
-4. How do you run an executable script from the terminal?
+- How do you make a script executable?  
+  **Answer**: `chmod +x hello.sh`
 
-   run :./hello.sh
+- How do you run an executable script from the terminal?  
+  **Answer**: `./hello.sh`
 
-Task 1.4: Package Management
+---
 
+### Task 1.4: Package Management
 1. Update the package lists on your Linux system.
-2. Install the curl package.
+2. Install the `curl` package.
 
-Questions:
-1. What command did you use to update the package lists?
- 
-   apt-get update
-   
-3. What command did you use to install the curl package?
+**Questions:**
+- What command did you use to update the package lists?  
+  **Answer**: `apt-get update`
 
-   apt-get install curl
-   
-4. How do you check if the curl package is installed correctly?
+- What command did you use to install the `curl` package?  
+  **Answer**: `apt-get install curl`
 
-   curl --version
+- How do you check if the `curl` package is installed correctly?  
+  **Answer**: `curl --version`
 
-Task 2 Linux Server Simulation:
-1. Install Apache, MySQL and PHP on the Linux Ubuntu machine using apt-get or another package manager of your choice.
+---
 
-    apt-get install apache2 mysql-server php libapache2-mod-php php-mysql
-
-3. Configure Apache to serve the website from the /var/www/html/ directory.
-
-    nano /etc/apache2/sites-available/000-default.conf
-   systemctl restart apache2
-
-5. Create a simple website that displays the message "Hello World!"; when accessed through a web browser.
-
-    echo "Hello World!" | sudo tee /var/www/html/index.html
-
-7. Configure MySQL to create a new database, user, and password for the website.
-
-    mysql -u root -p 
-   inside sql : 
-   CREATE DATABASE website_db;
-   CREATE USER 'website_user'@'localhost' IDENTIFIED BY 'omar';
-   GRANT ALL PRIVILEGES ON website_db.* TO 'website_user'@'localhost';
-   FLUSH PRIVILEGES;
-   EXIT;
-   
-9. Modify the website to use the newly created database to display a message that includes the visitor's IP address and the current time.
-
-   <?php
-   echo "Visitor IP: " . $_SERVER['REMOTE_ADDR'];
-   echo "Current Time: " . date('Y-m-d H:i:s');
-   ?>
-   Place the code inside /var/www/html/index.php:
-   echo '<?php echo "Visitor IP: " . $_SERVER["REMOTE_ADDR"]; echo "Current Time: " . date("Y-m-d H:i:s"); ?>' | sudo tee /var/www/html/index.php
-
-11. Test the website by accessing it through a web browser and verifying that it displays the expected message.
-
-   http://localhost/info.php
+## Task 2: Linux Server Simulation
+1. Install Apache, MySQL, and PHP on the Linux Ubuntu machine using `apt-get` or another package manager of your choice:
+   ```bash
+   apt-get install apache2 mysql-server php libapache2-mod-php php-mysql
   
 Task 3 Git and GitHub:
 1. Initialize a new Git repository on your local machine.
