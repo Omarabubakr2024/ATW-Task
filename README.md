@@ -4,46 +4,70 @@ Task 1.1: Creating Directories and Files:-
 2. Inside the project directory, create two subdirectories named src and bin.
 3. In the src directory, create a file named main.c.
 4. Add the following line to main.c: // This is the main.c file 
+
 Questions:
 1. What command did you use to create the project directory? 
-   mkdir project
-2. How do you navigate into the src directory from the project directory?
+
+    mkdir project
+   
+3. How do you navigate into the src directory from the project directory?
+
    cd src
-3. Which command did you use to create the main.c file?
-   touch src/main.c
+   
+5. Which command did you use to create the main.c file?
+
+    touch src/main.c
 
 Task 1.2: File Permissions:-
+
 1. Change the permissions of the main.c file to read and write for the owner, and read-only for the group and others.
 2. Verify the changes using the ls command.
+
 Questions:
 1. What command did you use to change the permissions of main.c?
-   chmod 644 src/main.c
-2. What do the file permissions rw-r--r-- mean?
-   The owner can read and write the file
+
+    chmod 644 src/main.c
+   
+3. What do the file permissions rw-r--r-- mean?
+
+    The owner can read and write the file
    Members of the group can only read the file, but they cannot modify it.
    other users can read the file, but they cannot modify it.
 
 Task 1.3: Basic Shell Scripting
+
 1. Create a shell script named hello.sh that prints "Hello, World!" to the terminal.
 2. Make the script executable and run it.
 
 Questions:
 1. What command did you use to create the hello.sh file?
+ 
    echo 'echo "Hello, World!"' > hello.sh
-2. How do you make a script executable?
+   
+3. How do you make a script executable?
+
    chmod +x hello.sh
-3. How do you run an executable script from the terminal?
+   
+4. How do you run an executable script from the terminal?
+
    run :./hello.sh
 
 Task 1.4: Package Management
+
 1. Update the package lists on your Linux system.
 2. Install the curl package.
+
 Questions:
 1. What command did you use to update the package lists?
+ 
    apt-get update
-2. What command did you use to install the curl package?
+   
+3. What command did you use to install the curl package?
+
    apt-get install curl
-3. How do you check if the curl package is installed correctly?
+   
+4. How do you check if the curl package is installed correctly?
+
    curl --version
 
 Task 2 Linux Server Simulation:
