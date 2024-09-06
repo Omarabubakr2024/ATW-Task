@@ -66,51 +66,126 @@
 
 ---
 
-## Task 2: Linux Server Simulation
-1. Install Apache, MySQL, and PHP on the Linux Ubuntu machine using `apt-get` or another package manager of your choice:
+# Task 2: Linux Server Simulation
+
+1. **Install Apache, MySQL, and PHP on the Linux Ubuntu machine using apt-get or another package manager of your choice.**
+
    ```bash
    apt-get install apache2 mysql-server php libapache2-mod-php php-mysql
-  
-Task 3 Git and GitHub:
-1. Initialize a new Git repository on your local machine.
+   ```
 
-    git init
+2. **Configure Apache to serve the website from the `/var/www/html/` directory.**
 
-3. Create a (.gitignore) file to exclude any sensitive files (like configuration files with passwords).
+   ```bash
+   nano /etc/apache2/sites-available/000-default.conf
+   systemctl restart apache2
+   ```
 
-    echo "config.php" > .gitignore
+3. **Create a simple website that displays the message "Hello World!" when accessed through a web browser.**
 
-5. Commit your Markdown documentation file in the Git repository.
+   ```bash
+   echo "Hello World!" | sudo tee /var/www/html/index.html
+   ```
 
+4. **Configure MySQL to create a new database, user, and password for the website.**
+
+   ```bash
+   mysql -u root -p
+   CREATE DATABASE website_db;
+   CREATE USER 'website_user'@'localhost' IDENTIFIED BY 'omar';
+   GRANT ALL PRIVILEGES ON website_db.* TO 'website_user'@'localhost';
+   FLUSH PRIVILEGES;
+   EXIT;
+   ```
+
+5. **Modify the website to use the newly created database to display a message that includes the visitor's IP address and the current time.**
+
+   ```bash
+   echo '<?php echo "Visitor IP: " . $_SERVER["REMOTE_ADDR"]; echo "Current Time: " . date("Y-m-d H:i:s"); ?>' | sudo tee /var/www/html/index.php
+   ```
+
+6. **Test the website by accessing it through a web browser and verifying that it displays the expected message.**
+
+   Open the following URL in a browser: `http://localhost/index.php`
+
+---
+
+# Task 3: Git and GitHub
+
+1. **Initialize a new Git repository on your local machine.**
+
+   ```bash
+   git init
+   ```
+
+2. **Create a `.gitignore` file to exclude any sensitive files (like configuration files with passwords).**
+
+   ```bash
+   echo "config.php" > .gitignore
+   ```
+
+3. **Commit your Markdown documentation file in the Git repository.**
+
+   ```bash
    git add README.md
    git commit -m "Add documentation"
+   ```
 
-7. Create a new repository on GitHub and push your local repository to GitHub.
+4. **Create a new repository on GitHub and push your local repository to GitHub.**
+
+   ```bash
    git remote add origin https://github.com/Omarabubakr2024/ATW-Task.git
    git push -u origin master
-   
-Task 4 Containerize Your Repository Using Docker Compose:
-Containerize the PHP Laravel application and the MySQL server using Docker Compose to ensure a consistent and reproducible environment.
+   ```
 
-1. Create Dockerfiles for both the PHP Laravel application and the MySQL server. These Dockerfiles will specify the base images and the setup environment required for each service.
-2. Develop a Docker Compose Configuration by writing a docker-compose.yml file that defines and links the services. This configuration will include all necessary environment variables, port mappings, and volume configurations.
-3. Build and Launch the Containers by using Docker Compose to build the images and run the containers. This will ensure that the application and database are correctly linked and accessible.
-4. Document the Process by detailing the steps taken, including the commands used and any challenges faced, to provide a clear and comprehensive documentation of the containerization process.
+---
 
-In this task, I containerized a Laravel PHP application and MySQL database using Docker Compose. Below is a detailed explanation of the steps I followed, including the creation of Dockerfiles, the configuration of the docker-compose.yml file, and the process of building and running the containers.
+# Task 4: Containerize My PHP Laravel Application and MySQL Server Using Docker Compose
 
-First, I created a Dockerfile for the Laravel PHP application. This file defines the base image and the necessary steps to set up the environment for the application. The Dockerfile is as
-Base Image: I used the php:7.4-fpm image to run the PHP-FPM process.
-Working Directory: The project files are copied into the /var/www directory inside the container.
-Extensions: The pdo and pdo_mysql extensions are installed to enable database interactions.
-Command: The container runs php-fpm to serve the application.
- For the database service, I used the official MySQL image. This simplifies the process since I don't need to create a custom Dockerfile for MySQL.
- 
- Next, I wrote the docker-compose.yml file to define and link both the Laravel application and the MySQL database.
- 
-Application Service (app):
+## Step 1: Create a Dockerfile for the PHP Laravel Application
 
-version: '3.8'
+In this step, I created a `Dockerfile` to set up the environment for my Laravel application. The file contains the following commands:
+
+```Dockerfile
+# Use the official PHP image
+FROM php:7.4-fpm
+
+# Install required PHP extensions for Laravel
+RUN docker-php-ext-install pdo pdo_mysql
+
+# Set the working directory
+WORKDIR /var/www
+
+# Copy project files to the container
+COPY . /var/www
+
+# Install Composer
+RUN apt-get update && apt-get install -y \
+    curl \
+    git \
+    unzip
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Install Laravel dependencies
+RUN composer install
+
+# Set permissions
+RUN chown -R www-data:www-data /var/www
+
+# Expose the necessary port
+EXPOSE 9000
+```
+
+## Step 2: Use the Official MySQL Docker Image
+
+For the MySQL service, I used the official MySQL image from Docker Hub, so there was no need to create or modify a separate `Dockerfile` for MySQL.
+
+## Step 3: Write the `docker-compose.yml` File
+
+Next, I created the `docker-compose.yml` file to define and link the services (Laravel application and MySQL server). Here's the configuration I used:
+
+```yaml
+version: '3'
 
 services:
   app:
@@ -118,10 +193,11 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: laravel_app
-    ports:
-      - "8000:80"
+    working_dir: /var/www
     volumes:
       - .:/var/www
+    ports:
+      - "8000:80"
     depends_on:
       - db
 
@@ -129,64 +205,95 @@ services:
     image: mysql:5.7
     container_name: mysql_db
     environment:
+      MYSQL_DATABASE: laravel_db
+      MYSQL_USER: laravel_user
+      MYSQL_PASSWORD: secret
       MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: website_db
-      MYSQL_USER: website_user
-      MYSQL_PASSWORD: omar
-    ports:
-      - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
 
 volumes:
   db_data:
+```
 
-It builds the application image from the Dockerfile.
-It exposes port 8000 on the host to port 80 in the container, allowing the application to be accessed via http://localhost:8000.
-A volume is created to mount the local project files into the container for easy development.
-The application depends on the db service, ensuring the database is running before the application starts.
-Database Service (db):
-I used the official mysql:5.7 image.
-The environment variables configure the MySQL database with a root password, a database (website_db), and a user (website_user) with the password omar.
-Port 3306 is exposed for MySQL connections.
+## Step 4: Build and Run the Containers
 
-To build and run the containers, I used the following command in the project directory: docker-compose up --build
-This command builds the Docker images for the Laravel application and starts both the app and db containers. The application is now accessible via http://localhost:8000, and the MySQL database is running on port 3306
+To build and run the containers, I used the following commands:
 
-Once the containers were running, I tested the Laravel application by opening a web browser and navigating to http://localhost:8000. The application successfully loaded and connected to the MySQL database.
+### 1. Build the containers:
 
-i faced a lot of errors and failures that tought me a lot
+```bash
+docker-compose build
+```
 
-Task 5 Networking Basics:
-Explain what IP address used in these tasks and it's routing protocols Also, document the steps took you to connect to your cloud instance from a remote machine (including the SSH process).
+### 2. Start the containers:
 
-In these tasks, two types of IP addresses are commonly used:
-Localhost (127.0.0.1):
-This is the default IP address for your local machine, also known as the loopback address. It allows the machine to refer to itself. For example, when you access http://localhost in your web browser, you're connecting to the local web server (Apache in this case) on the same machine.
-Public/Private IP Addresses:
-Public IP Address: If you're connecting to a cloud instance or remote machine, the public IP address is used. This IP address is assigned by the cloud provider and can be accessed over the internet.
-Private IP Address: Used for internal networking, especially when Docker containers or multiple services are interacting with each other within a cloud or private network.
-Routing Protocols :-
+```bash
+docker-compose up
+```
+
+After running these commands, Docker successfully built and ran the containers for both the Laravel application and the MySQL server.
+
+
+---
+
+# Task 5: Networking Basics
+
+## IP Address Types Used in These Tasks:
+
+1. **Localhost (127.0.0.1):**
+   - This is the default IP address for my local machine, also known as the loopback address. It allows the machine to refer to itself. For example, when you access `http://localhost` in your web browser, you're connecting to the local web server (Apache in this case) on the same machine.
+
+2. **Public/Private IP Addresses:**
+   - **Public IP Address:** If you're connecting to a cloud instance or remote machine, the public IP address is used. This IP address is assigned by the cloud provider and can be accessed over the internet.
+   - **Private IP Address:** Used for internal networking, especially when Docker containers or multiple services are interacting with each other within a cloud or private network.
+
+## Routing Protocols:
+
 Routing protocols direct how data packets are forwarded from one network to another:
-Static Routing: In some cases, like your local setup, static routes are defined manually. For instance, when Docker networks are set up, they use predefined IP ranges within the container network.
-Dynamic Routing: Cloud providers often use dynamic routing protocols like OSPF or BGP. These help efficiently route traffic between different data centers and internet gateways.
-Docker Compose links services (PHP and MySQL) using Docker’s built-in bridge networking. Containers can communicate with each other through container names as hostnames, which makes routing within the application seamless .
 
-To connect to a cloud instance you typically use SSH. Below are the steps:
-Generate SSH Keys :-
+- **Static Routing:** In some cases, like your local setup, static routes are defined manually. For instance, when Docker networks are set up, they use predefined IP ranges within the container network.
+  
+- **Dynamic Routing:** Cloud providers often use dynamic routing protocols like OSPF (Open Shortest Path First) or BGP (Border Gateway Protocol). These protocols help efficiently route traffic between different data centers and internet gateways.
+
+Docker Compose links services (such as PHP and MySQL) using Docker’s built-in bridge networking. Containers can communicate with each other using container names as hostnames, which makes routing within the application seamless.
+
+---
+
+## Steps to Connect to a Cloud Instance from a Remote Machine (SSH Process):
+
+To connect to a cloud instance, you typically use SSH (Secure Shell). Below are the steps:
+
+### 1. Generate SSH Keys:
+
 On your local machine, generate a new SSH key pair if you don’t have one:
 
-command:ssh-keygen -t rsa -b 2048
+```bash
+ssh-keygen -t rsa -b 2048
+```
 
-This creates two files: id_rsa (private key) and id_rsa.pub (public key). You'll use the public key for authentication.
-Add the Public Key to the Cloud Instance
-Once you have your instance running, you need to copy the public key to the cloud server. You can do this using the ssh-copy-id command, or manually by logging into the cloud provider's dashboard and pasting the public key into the authorized SSH key section.
-Connect to the Cloud Instance
+This command creates two files: 
+- `id_rsa` (private key)
+- `id_rsa.pub` (public key)
+
+You'll use the public key for authentication.
+
+### 2. Add the Public Key to the Cloud Instance:
+
+Once you have your cloud instance running, you need to copy the public key (`id_rsa.pub`) to the cloud server. You can do this using the `ssh-copy-id` command:
+
+```bash
+ssh-copy-id your_user@your_server_ip
+```
+
+Alternatively, you can log into the cloud provider's dashboard and paste the public key into the authorized SSH key section for the instance.
+
+### 3. Connect to the Cloud Instance:
+
 Use the SSH command to log into your remote server:
 
-command: ssh -i /path/to/id_rsa your_user@your_server_ip
-
--i specifies the path to your private key.
-your_user is the username of the remote instance (commonly ubuntu or root).
-your_server_ip is the public IP address of your cloud instance.
-Once connected, you’ll be inside the terminal of your cloud instance. You can manage your server from here, install services, or deploy your application.
+```bash
+ssh -i /path/to/id_rsa your_user@your_server_ip
+```
